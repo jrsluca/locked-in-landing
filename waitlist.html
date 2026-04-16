@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LockedIn — Join the Waitlist</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* ── Particle canvas ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Planet ── */
+    .planet-wrap {
+      position: fixed;
+      bottom: -52vw;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      height: 90vw;
+      max-width: 1200px;
+      max-height: 1200px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .planet {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 50% 30%, #1a1d2e 0%, #0d0f18 40%, #050508 100%);
+      box-shadow:
+        /* atmospheric rim glow */
+        0 -6px 80px rgba(120, 140, 200, 0.22),
+        0 -2px 30px rgba(160, 180, 255, 0.18),
+        /* inner shadow */
+        inset 0 30px 100px rgba(0,0,0,0.8);
+      position: relative;
+    }
+
+    /* bright rim highlight */
+    .planet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(200, 220, 255, 0.5) 25%,
+        rgba(230, 240, 255, 0.9) 50%,
+        rgba(200, 220, 255, 0.5) 75%,
+        transparent 100%
+      );
+      border-radius: 50%;
+      filter: blur(1px);
+    }
+
+    /* soft halo above planet */
+    .planet::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 5%;
+      right: 5%;
+      height: 120px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(100, 120, 200, 0.18) 0%, transparent 70%);
+      filter: blur(8px);
+      border-radius: 50%;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 36px;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 48px;
+      /* push content up so planet fills lower half */
+      padding-bottom: 28vh;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 32px;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 6px #4ade80;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* ── Headline ── */
+    h1 {
+      font-size: clamp(42px, 6.5vw, 88px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 20px;
+      max-width: 700px;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Subheadline ── */
+    .sub {
+      font-size: clamp(14px, 1.4vw, 16px);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.4);
+      line-height: 1.6;
+      margin-bottom: 40px;
+      max-width: 380px;
+    }
+
+    /* ── Email form ── */
+    .email-form {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 6px 6px 6px 22px;
+      gap: 8px;
+      width: 100%;
+      max-width: 420px;
+      transition: border-color 0.2s;
+    }
+
+    .email-form:focus-within {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .email-form input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #ffffff;
+      font-family: inherit;
+      min-width: 0;
+    }
+
+    .email-form input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .email-form button {
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .email-form button:hover {
+      background: #e8e8e8;
+      transform: scale(1.02);
+    }
+
+    /* ── Success state ── */
+    .success {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      padding: 14px 24px;
+      background: rgba(74, 222, 128, 0.08);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      border-radius: 999px;
+    }
+
+    .success.show { display: flex; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      nav { padding: 18px 20px; }
+
+      h1 { font-size: clamp(36px, 10vw, 60px); }
+
+      .email-form {
+        flex-direction: column;
+        border-radius: 16px;
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .email-form input {
+        width: 100%;
+        text-align: center;
+        padding: 4px 0;
+      }
+
+      .email-form button {
+        width: 100%;
+        padding: 13px;
+      }
+
+      .planet-wrap { bottom: -60vw; width: 110vw; height: 110vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Planet -->
+  <div class="planet-wrap">
+    <div class="planet"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">LockedIn</a>
+  </nav>
+
+  <main class="hero">
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Now accepting early members
+    </div>
+
+    <h1>The grind starts<br>before the <em>launch.</em></h1>
+
+    <p class="sub">Be first in line. Join the waitlist and get early access when we go live.</p>
+
+    <form class="email-form" id="wl-form" onsubmit="handleSubmit(event)">
+      <input type="email" placeholder="Your email address" required autocomplete="email" />
+      <button type="submit">Get Notified</button>
+    </form>
+
+    <div class="success" id="success-msg">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#4ade80" opacity="0.2"/><path d="M5 8l2 2 4-4" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      You're on the list — we'll be in touch.
+    </div>
+
+  </main>
+
+  <script>
+    /* ── Particles ── */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = Array.from({ length: 90 }, () => ({
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        r:  Math.random() * 1.0 + 0.2,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        o:  Math.random() * 0.28 + 0.04,
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(210, 215, 240, ${p.o})`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -2)  p.x = W + 2;
+        if (p.x > W+2) p.x = -2;
+        if (p.y < -2)  p.y = H + 2;
+        if (p.y > H+2) p.y = -2;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    resize(); createParticles(); draw();
+    window.addEventListener('resize', () => { resize(); createParticles(); });
+
+    /* ── Form ── */
+    function handleSubmit(e) {
+      e.preventDefault();
+      document.getElementById('wl-form').style.display = 'none';
+      document.getElementById('success-msg').classList.add('show');
+    }
+  </script>
+
+</body>
+</html>
