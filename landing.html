@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stay Locked In.</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #2a2a2e 0%, #1c1c1f 30%, #111113 65%, #0a0a0b 100%);
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 32px;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .btn-waitlist {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-waitlist:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 48px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -56%);
+      width: 680px;
+      height: 480px;
+      background: radial-gradient(ellipse at center, rgba(90, 90, 110, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    .app-icon {
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(160deg, #2c2c32 0%, #1a1a1e 60%, #111114 100%);
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 8px 32px rgba(0,0,0,0.6),
+        0 2px 8px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-icon svg {
+      width: 64px;
+      height: 34px;
+    }
+
+    h1 {
+      font-size: clamp(52px, 9vw, 110px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #ffffff;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sub {
+      font-size: clamp(14px, 1.8vw, 17px);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+      margin-bottom: 44px;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-primary {
+      background: #ffffff;
+      color: #0a0a0b;
+      border: none;
+      border-radius: 999px;
+      padding: 16px 34px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: #e8e8e8;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      padding: 16px 34px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 18px 20px; }
+
+      .app-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 20px;
+      }
+
+      .app-icon svg {
+        width: 52px;
+        height: 28px;
+      }
+
+      .cta-group { flex-direction: column; gap: 12px; }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 260px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="logo">Lockedinc</span>
+    <a href="#" class="btn-waitlist">Join Waitlist</a>
+  </nav>
+
+  <main class="hero">
+
+    <div class="app-icon">
+      <svg viewBox="0 0 64 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L26 10 L26 24 L2 20 Z" fill="white" opacity="0.95"/>
+        <path d="M62 2 L38 10 L38 24 L62 20 Z" fill="white" opacity="0.95"/>
+        <ellipse cx="16" cy="16" rx="5" ry="6" fill="#1a1a1e"/>
+        <ellipse cx="48" cy="16" rx="5" ry="6" fill="#1a1a1e"/>
+      </svg>
+    </div>
+
+    <h1>Stay Locked In.</h1>
+
+    <p class="sub">Build discipline. Destroy addictions. Transform your body and mind.</p>
+
+    <div class="cta-group">
+      <a href="#" class="btn-primary">Get Early Access</a>
+      <a href="#" class="btn-secondary">Learn More</a>
+    </div>
+
+  </main>
+
+</body>
+</html>
